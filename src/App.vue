@@ -13,12 +13,14 @@
   import Mentions from "./views/Mentions.vue";
   import Contacts from "./views/Contacts.vue";
   import Messages from "./views/Messages.vue";
+  import Links from "./views/Links.vue";
   
   const activePage = ref('Mentions');
   const pages = {
     Mentions,
     Contacts,
-    Messages
+    Messages,
+    Links
   }
 
   function setPage (pageName: keyof typeof pages) {
