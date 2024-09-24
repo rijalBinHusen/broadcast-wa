@@ -11,10 +11,12 @@
   import { ref, defineComponent } from "vue";
   import Sidebar from "./components/Sidebar.vue";
   import Mentions from "./views/Mentions.vue";
+  import Contacts from "./views/Contacts.vue";
   
   const activePage = ref('Mentions');
   const pages = {
     Mentions,
+    Contacts
   }
 
   function setPage (pageName: keyof typeof pages) {
