@@ -26,9 +26,8 @@
 	import { ref } from "vue";
 	import Button from "./Button.vue";
 
-	const navActive = ref({
-		id: '', title: ''
-	})
+	const emits = defineEmits(['moveToPage'])
+	const navActive = ref({ id: '', title: '' })
 	const isSideBarActive = ref(false);
 	const navs = ref([
 		{id: 'mentions', title: 'Mentions'},
@@ -43,6 +42,7 @@
 
 		navActive.value = findNav;
 		isSideBarActive.value = false;
+		emits('moveToPage', findNav.title)
 	}
 </script>
 
