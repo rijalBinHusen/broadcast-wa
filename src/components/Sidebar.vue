@@ -1,65 +1,46 @@
-  
-<script setup lang="ts">
+<template>
+	<div class="w3-bar w3-teal w3-center w3-border w3-padding">
+		<Button primary style="left:13px;" class="w3-left" value="&#9776;" @click="sideBarActive = !sideBarActive" type="button" />
+		<!-- <span class="w3-center w3-xlarge">{{ active.title }}</span> -->
+		<span class="w3-center w3-xlarge">Title</span>
 
-    const navItems = [
-        { id: 1, label: 'Mentions' },
-        { id: 2, label: 'Contacts' },
-        { id: 3, label: 'Messages' },
-        { id: 4, label: 'Links' },
-    ];
+		<div v-if="sideBarActive" class="w3-sidebar w3-border-teal w3-rightbar w3-bar-block w3-card w3-animate-left w3-right" style="left:0; position:fixed; top:0;"  id="leftMenu">
+				<button class=" w3-text-black w3-bar-item w3-button w3-large w3-right-align" @click="sideBarActive = !sideBarActive">&times;</button>
+				
+				<h3 class="w3-text-black w3-left w3-padding-left">Reports</h3>
+				<Button 
+					noborder 
+					class="w3-bar-item w3-text-black" 
+					value="Title" 
+					type="button" 
+					@click="toNav($event)" 
+				/>
+				
+				<!-- <h3 class="w3-text-black w3-left w3-padding-left">Settings</h3>
+				<Button 
+					v-for="nav in setting"
+					:key="nav.id"
+					noborder 
+					:class="['w3-bar-item w3-text-black', active.id === nav.id ? 'w3-teal' : '']" 
+					:value="nav.title" 
+					type="button" 
+					:datanya="nav.id" 
+					@trig="toNav($event)" 
+				/> -->
+		</div>
+	</div>
+</template>
+
+<script lang="ts" setup>
+	import { ref } from "vue";
+	import Button from "./Button.vue";
+
+	const sideBarActive = ref(false)
+	
+	function toNav(nav: string) {
+		alert("Function not implemented yet")
+	}
 </script>
 
-<template>
-    <div class="sidebar">
-      <h2 class="sidebar-header">Broadcast</h2>
-      <ul class="sidebar-nav">
-        <li v-for="item in navItems" :key="item.id">
-            <a href="#">{{ item.label }}</a>
-        </li>
-      </ul>
-    </div>
-  </template>
-  
-  <style scoped>
-  .sidebar {
-    background-color: var(--sidebar-bg-color);
-    color: var(--sidebar-text-color);
-    padding: 1rem;
-    width: 200px;
-    height: 100vh;
-  }
-  
-  .sidebar-header {
-    margin-bottom: 1rem;
-  }
-  
-  .sidebar-nav {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar-nav li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .sidebar-nav a {
-    display: block;
-    padding: 0.5rem;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .sidebar-nav a:hover {
-    background-color: var(--sidebar-hover-bg-color);
-  }
-  
-  /* Dark mode styles */
-  .dark-theme .sidebar {
-    background-color: var(--dark-sidebar-bg-color);
-    color: var(--dark-sidebar-text-color);
-  }
-  
-  .dark-theme .sidebar-nav a:hover {
-    background-color: var(--dark-sidebar-hover-bg-color);
-  }
-  </style>
+<style>
+</style>
