@@ -12,11 +12,13 @@
   import Sidebar from "./components/Sidebar.vue";
   import Mentions from "./views/Mentions.vue";
   import Contacts from "./views/Contacts.vue";
+  import Messages from "./views/Messages.vue";
   
   const activePage = ref('Mentions');
   const pages = {
     Mentions,
-    Contacts
+    Contacts,
+    Messages
   }
 
   function setPage (pageName: keyof typeof pages) {
