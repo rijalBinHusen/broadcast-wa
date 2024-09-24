@@ -33,11 +33,11 @@
       icon: String,
       small: Boolean,
       noborder: Boolean,
-      nomargin: Boolean,
+      nomargin: Boolean
     });
 
     const className = computed(() => {
-      let classList = [];
+      let classList = ['w3-border'];
         if (props.type == "button") classList.push("w3-button");
         if (!props.nomargin) classList.push(" w3-margin-right")
         if (!props.noborder) classList.push("w3-round")
