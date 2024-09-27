@@ -1,28 +1,30 @@
 <template>
-    <div class="w3-center w3-margin-top">
+    <div class="w3-margin-top">
       <form ref="spvForm" class="margin-bottom" @submit.prevent="handleSubmit">
-      <p class="w3-col s2 w3-right-align w3-margin-right">Add new messages : </p>
+      <p class="w3-row">New message title : </p>
+      
       <input 
-        v-model="form.titleMessage" 
-        class="w3-col s2 w3-input w3-large w3-margin-right" 
-        type="text" 
-        placeholder="Title" 
+      v-model="form.titleMessage"
+      class="w3-mobile w3-input w3-large w3-margin-bottom" 
+      type="text" 
+      placeholder="Title" 
       />
-
-      <textarea v-model="form.message" name="message" id="message" cols="30" rows="10">
-
+      
+      <p class="w3-row">New message text : </p>
+      <textarea class="w3-mobile" placeholder="Text message" v-model="form.message" style="width:100vw" name="message" id="message" cols="90" rows="10">
+        
       </textarea>
   
       <Button 
         primary 
-        class="w3-left w3-large w3-margin-left" 
+        class="w3-large" 
         :value="idEdit ? 'Update' : 'Add'" 
         type="button"
       />
       <Button 
         v-if="idEdit"
         danger 
-        class="w3-left w3-large" 
+        class="w3-large" 
         value="Cancel" 
         type="button" 
         @click="cancel" 
