@@ -27,9 +27,9 @@
     </div>
       <Datatable
         v-if="renderTable"
-        :datanya="data"
+        :datanya="mentionsData"
         :heads="['Sebutan']"
-        :keys="['kode']"
+        :keys="['mention']"
         option
         id="tableBaseFile"
         v-slot:default="slotProp"
@@ -47,13 +47,12 @@
   <script setup lang="ts">
     import Button from "@/components/Button.vue"
     import Datatable from "@/components/Datatable.vue"
-    // import { addItem, updateItem, lists as stateItems, getItemById, removeItem, get20Item } from '@/composable/components/Baseitem'
-    // import { baseItem, lists as stateItems } from "./Baseitem"
+    import { Mention, mentionsData } from "./Mentions";
     import { onMounted, ref } from "vue";
   
+    const mentionOperation = new Mention();
     const mention = ref('');
     const idEdit = ref('')
-    const data = ref([]);
     const renderTable = ref(true);
   
     function cancel () {
@@ -63,40 +62,28 @@
   
     async function handleSubmit() {
       const isOkeToSend = mention.value !== '';
-      
       if(!isOkeToSend) { 
         alert('Form tidak boleh kosong') 
         return
       };
   
-      if(idEdit.value) {
-        alert("Function not implemented yet")
-        // await updateItem(editId.value, kode.value, name.value);
-        
-    } else {
-        
-        alert("Function not implemented yet")
-        // await addItem(kode.value, name.value);
-        
-    }
+      if(idEdit.value) await mentionOperation.mentionUpdate(idEdit.value,  mention.value);
+      else await mentionOperation.mentionAppend(mention.value);
+
+      cancel();
   
     }
     
     async function edit (idMention: string) {
-        alert("Function not implemented yet")
+
+      if(!idMention) return;
   
-    //   editId.value = idMention;
-    //   const item = await getItemById(idItem);
-    //   kode.value = item?.kode;
-    //   name.value = item?.name;
+      idEdit.value = idMention;
+      const data = await mentionOperation.mentionGetById(idMention);
+      if(!data?.id) return;
+      mention.value = data.mention;
   
-    } 
-  
-    // onMounted(async () => {
-    //   await getAllItems();
-    //   cancel();
-    //   renewList();
-    // })
+    }
     
   </script>
   

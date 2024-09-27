@@ -26,9 +26,9 @@ let storeNameToUpdate: string[] = [];
 
 export const useIdb = (storeName: string) => {
   // create instance
-  const store = localforage.createInstance({ name: 'myreport', storeName });
-  const summaryDb = localforage.createInstance({ name: 'myreport', storeName: 'summary' });
-  const logging = localforage.createInstance({ name: 'myreport', storeName: 'activity' });
+  const store = localforage.createInstance({ name: 'broadcast-wa', storeName });
+  const summaryDb = localforage.createInstance({ name: 'broadcast-wa', storeName: 'summary' });
+  const logging = localforage.createInstance({ name: 'broadcast-wa', storeName: 'activity' });
 
   async function getSummary() {
     //check is summary exists on state
@@ -121,6 +121,7 @@ export const useIdb = (storeName: string) => {
   const createItem = async <T>(yourObject: T, isDontRecordActivity?: boolean): Promise<string | undefined> => {
     // get summary
     const sum = await getSummary();
+    console.log(yourObject)
     // generateID
     const nextId = generateId(sum?.lastId);
     // record to set

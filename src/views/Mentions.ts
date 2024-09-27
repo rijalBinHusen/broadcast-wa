@@ -1,30 +1,41 @@
 import { useIdb } from "@/utils/localforage";
+import { ref } from "vue";
 
 interface mention {
     id: string;
     mention: string
 }
 
-class Mention {
+export const mentionsData = ref<mention[]>([])
 
-    db = useIdb('mentions');
+export class Mention {
+
+    private db = useIdb('mentions');
     constructor () {
-        
+        this.mentionRetrieve();
     }
 
-    mentionAppend (mention: string) {
+    async mentionAppend (mention: string) {
         if(mention == "") return;
-
-        this.db.createItem(mention)
+        await this.db.createItem({ mention });
+        await this.mentionRetrieve();
     }
 
-    mentionUpdate (id: string, mention: string) {
+    async mentionUpdate (id: string, mention: string) {
         if(id == "" || mention == "") return;
-
-        this.db.updateItem(id, { mention })
+        await this.db.updateItem(id, { mention });
+        await this.mentionRetrieve();
     }
 
     async mentionRetrieve() {
-        const data = await this.db.getItems<mention>()
+        const data = await this.db.getItems<mention>();
+        if(!data.length) return;
+        mentionsData.value = data;
+    }
+
+    async mentionGetById(id: string) {
+        const data = await this.db.getItem<mention>(id);
+        if(!data?.id) return;
+        return data;
     }
 }
