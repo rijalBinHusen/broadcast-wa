@@ -3,7 +3,7 @@
       <form ref="spvForm" class="margin-bottom" @submit.prevent="handleSubmit">
       <p class="w3-col s2 w3-right-align w3-margin-right">Add new messages : </p>
       <input 
-        v-model="form.title" 
+        v-model="form.titleMessage" 
         class="w3-col s2 w3-input w3-large w3-margin-right" 
         type="text" 
         placeholder="Title" 
@@ -30,10 +30,9 @@
       </form>
     </div>
       <Datatable
-        v-if="renderTable"
-        :datanya="data"
+        :datanya="messageData"
         :heads="['Title', 'Message']"
-        :keys="['title', 'message']"
+        :keys="['titleMessage', 'message']"
         option
         id="tableBaseFile"
         v-slot:default="slotProp"
@@ -51,56 +50,42 @@
   <script setup lang="ts">
     import Button from "@/components/Button.vue"
     import Datatable from "@/components/Datatable.vue"
-    // import { addItem, updateItem, lists as stateItems, getItemById, removeItem, get20Item } from '@/composable/components/Baseitem'
-    // import { baseItem, lists as stateItems } from "./Baseitem"
-    import { onMounted, ref } from "vue";
+    import { ref } from "vue";
+    import { Message, messageData } from "./messages"
   
-    const form = ref({ title: '', message: ''});
+    const form = ref({ titleMessage: '', message: '', id: '', contacs: ['']});
     const idEdit = ref('')
-    const data = ref([]);
-    const renderTable = ref(true);
+    const messageOperation = new Message();
   
     function cancel () {
       idEdit.value = '';
-      mention.value = '';
+      form.value = { titleMessage: '', message: '', id: '', contacs: [''] }
     }
   
     async function handleSubmit() {
-      const isOkeToSend = mention.value !== '';
-      
-      if(!isOkeToSend) { 
+      const isNotOkeToSend = !form.value.titleMessage || !form.value.message;
+      console.log(isNotOkeToSend, form.value)
+      if(isNotOkeToSend) { 
         alert('Form tidak boleh kosong') 
         return
       };
+      const dataToSend = JSON.parse(JSON.stringify(form.value));
   
-      if(idEdit.value) {
-        alert("Function not implemented yet")
-        // await updateItem(editId.value, kode.value, name.value);
-        
-    } else {
-        
-        alert("Function not implemented yet")
-        // await addItem(kode.value, name.value);
-        
-    }
+      if(idEdit.value) messageOperation.messageUpdate(dataToSend)
+      else messageOperation.messageAppend(dataToSend)
+      
+      cancel()
   
     }
     
-    async function edit (idMention: string) {
-        alert("Function not implemented yet")
+    async function edit (messageId: string) {
   
-    //   editId.value = idMention;
-    //   const item = await getItemById(idItem);
-    //   kode.value = item?.kode;
-    //   name.value = item?.name;
+      idEdit.value = messageId;
+      const data = await messageOperation.messageGetById(messageId)
+      if(!data) return;
+      form.value = data;
   
-    } 
-  
-    // onMounted(async () => {
-    //   await getAllItems();
-    //   cancel();
-    //   renewList();
-    // })
+    }
     
   </script>
   

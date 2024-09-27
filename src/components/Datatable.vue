@@ -17,6 +17,7 @@
     <!-- data Table -->
 
     <table class="w3-table w3-striped w3-border">
+      <thead>
       <tr class="w3-teal">
         <th scope="col">No</th>
         <th
@@ -45,7 +46,9 @@
         
         <th v-if="option" scope="col">Option</th>
       </tr>
+    </thead>
 
+    <tbody>
       <!--search form-->
       <tr>
         <td></td>
@@ -79,6 +82,7 @@
           <slot :prop="r"></slot>
         </td>
       </tr>
+    </tbody>
     </table>
 
     <!--End of data Table -->

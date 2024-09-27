@@ -121,7 +121,6 @@ export const useIdb = (storeName: string) => {
   const createItem = async <T>(yourObject: T, isDontRecordActivity?: boolean): Promise<string | undefined> => {
     // get summary
     const sum = await getSummary();
-    console.log(yourObject)
     // generateID
     const nextId = generateId(sum?.lastId);
     // record to set
