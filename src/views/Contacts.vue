@@ -3,16 +3,25 @@
       <form ref="spvForm" class="margin-bottom" @submit.prevent="handleSubmit">
       <p class="w3-col s2 w3-right-align w3-margin-right">Add new contact : </p>
       <input 
-        v-model="phone" 
-        class="w3-col s2 w3-input w3-large w3-margin-right" 
-        type="text" 
-        placeholder="Phone" 
-      />
-      <input 
-        v-model="name" 
+        v-model="form.name" 
         class="w3-col s2 w3-input w3-large w3-margin-right" 
         type="text" 
         placeholder="name" 
+      />
+      <Select 
+        :options="mentionsData" 
+        value="id"
+        text="mention"
+        @selected="form.mention = $event"
+        title="Sebutan"
+        :inselect="form.mention"
+        />
+
+      <input 
+        v-model="form.phone" 
+        class="w3-col s2 w3-input w3-large w3-margin-right" 
+        type="text" 
+        placeholder="Phone" 
       />
   
       <Button 
@@ -33,11 +42,11 @@
     </div>
       <Datatable
         v-if="renderTable"
-        :datanya="data"
-        :heads="['Nama']"
-        :keys="['name']"
+        :datanya="contactData"
+        :heads="['Nama', 'Sebutan']"
+        :keys="['name', 'mentionName']"
         option
-        id="tableBaseFile"
+        id="tableContact"
         v-slot:default="slotProp"
       >
         <Button 
@@ -51,58 +60,52 @@
   </template>
   
   <script setup lang="ts">
-    import Button from "@/components/Button.vue"
-    import Datatable from "@/components/Datatable.vue"
+    import Button from "@/components/Button.vue";
+    import Datatable from "@/components/Datatable.vue";
+    import Select from "@/components/Select.vue";
     // import { addItem, updateItem, lists as stateItems, getItemById, removeItem, get20Item } from '@/composable/components/Baseitem'
     // import { baseItem, lists as stateItems } from "./Baseitem"
-    import { onMounted, ref } from "vue";
+    import { ref } from "vue";
+    import { Mention, mentionsData } from "./Mentions"
+    import { Contact, contactData } from "./Contacts";
   
-    const form = ref({ phone: 0, name: '' });
+    const form = ref({ phone: 0, name: '', mention: '' });
     const idEdit = ref('')
-    const data = ref([]);
     const renderTable = ref(true);
+
+    const mentionOperations = new Mention();
+    const contactOperations = new Contact();
   
     function cancel () {
       idEdit.value = '';
-      form.value = { phone: 0, name: '' };
+      form.value = { phone: 0, name: '', mention: '' };
     }
   
     async function handleSubmit() {
-      const isOkeToSend = phone.value !== '';
+      const isNotOkeToSend = !form.value.name ||  !form.value.mention || !form.value.phone;
       
-      if(!isOkeToSend) { 
+      if(isNotOkeToSend) { 
         alert('Form tidak boleh kosong') 
         return
       };
-  
-      if(idEdit.value) {
-        alert("Function not implemented yet")
-        // await updateItem(editId.value, kode.value, name.value);
-        
-    } else {
-        
-        alert("Function not implemented yet")
-        // await addItem(kode.value, name.value);
-        
-    }
-  
+      
+      if(idEdit.value) await  contactOperations.contactUpdate({ id: idEdit.value,  ...form.value });
+      else await contactOperations.contactAppend({...form.value, id: ''});
+      cancel()
+      
     }
     
-    async function edit (phone: string) {
-        alert("Function not implemented yet")
+    async function edit (idContact: string) {
+
+      if(!idContact) return;
+
+      idEdit.value = idContact;
+      const item = await contactOperations.contactGetById(idContact);
+      if(!item) return;
+
+      form.value = item;
   
-    //   editId.value = phone;
-    //   const item = await getItemById(idItem);
-    //   kode.value = item?.kode;
-    //   name.value = item?.name;
-  
-    } 
-  
-    // onMounted(async () => {
-    //   await getAllItems();
-    //   cancel();
-    //   renewList();
-    // })
+    }
     
   </script>
   

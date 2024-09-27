@@ -31,7 +31,7 @@
         :heads="['Sebutan']"
         :keys="['mention']"
         option
-        id="tableBaseFile"
+        id="tableMention"
         v-slot:default="slotProp"
       >
         <Button 
