@@ -46,7 +46,17 @@
           type="button" 
           @click="edit($event)" 
           />
+
+        <Button 
+          primary 
+          value="Contacts" 
+          :datanya="slotProp.prop.id" 
+          type="button" 
+          @click="isModalActive = true" 
+          />
       </Datatable>
+
+      <Modal title="example" :active="isModalActive" ></Modal>
   </template>
   
   <script setup lang="ts">
@@ -54,9 +64,11 @@
     import Datatable from "@/components/Datatable.vue"
     import { ref } from "vue";
     import { Message, messageData } from "./messages"
+    import Modal from "@/components/Modal.vue";
   
+    const isModalActive = ref(false)
     const form = ref({ titleMessage: '', message: '', id: '', contacs: ['']});
-    const idEdit = ref('')
+    const idEdit = ref('');
     const messageOperation = new Message();
   
     function cancel () {
@@ -87,6 +99,10 @@
       if(!data) return;
       form.value = data;
   
+    }
+
+    function addOrRemoveContacts() {
+      isModalActive.value = true
     }
     
   </script>
