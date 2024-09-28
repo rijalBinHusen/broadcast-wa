@@ -36,7 +36,7 @@ const props = defineProps({
     }
 })
 
-const contactsSelected = ref(<string[]>[]);
+const contactsSelected = ref(<string[]>['']);
 const emits = defineEmits(['updateContacts']);
 
 function handleSubmit() { emits("updateContacts", contactsSelected.value) }

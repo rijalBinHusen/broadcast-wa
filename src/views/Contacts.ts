@@ -10,7 +10,7 @@ export interface contact {
     mentionName?: string;
 }
 
-export const contactData = ref<contact[]>([])
+export const contactData = ref(<contact[]>[])
 
 export class Contact {
 
@@ -36,7 +36,7 @@ export class Contact {
         
         const isNotOkeToSend = !contact.id  || !contact.name  || !contact.phone || !contact.mention;
         if(isNotOkeToSend) return;
-        console.log(contact)
+        
         await this.db.updateItem(contact.id, contact);
         await this.contactRetrieve();
     }

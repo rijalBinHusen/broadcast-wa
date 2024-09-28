@@ -1,6 +1,5 @@
 import { useIdb } from "@/utils/localforage";
 import { ref } from "vue";
-import { Mention } from "../Mentions";
 
 interface message {
     id: string;
