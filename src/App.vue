@@ -12,7 +12,7 @@
   import Sidebar from "./components/Sidebar.vue";
   import Mentions from "./views/Mentions.vue";
   import Contacts from "./views/Contacts.vue";
-  import Messages from "./views/Messages.vue";
+  import Messages from "./views/Messages/Messages.vue";
   import Links from "./views/Links.vue";
   
   const activePage = ref('Mentions');

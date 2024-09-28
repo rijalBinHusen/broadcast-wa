@@ -5,6 +5,7 @@
           <!-- v-if="modal.mode !== 'loading'" -->
         <span
           class="w3-xlarge w3-button w3-display-topright w3-teal w3-round-large w3-hover-none"
+          @click="$emit('close')"
         >
           &times;
         </span>
@@ -20,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from "vue"
+import { watch } from "vue"
 
 const props = defineProps({
     title: {
@@ -34,14 +35,17 @@ const props = defineProps({
   })
 
   const emits = defineEmits(['close'])
-  
-  onMounted(() => {
-    window.addEventListener("keydown", (e) => {
-      if(e.keyCode == 27) {
-          emits("close")
-        }
-    })
-  })
 
-  onUnmounted(() => window.removeEventListener("keydown"))
+  function handleKeyDown (e: KeyboardEvent) {
+    if(e.key == "Escape") emits("close");
+  }
+
+  
+  watch(() => props.active, (newActive) => {
+    if(props.active) {
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+  })
 </script>

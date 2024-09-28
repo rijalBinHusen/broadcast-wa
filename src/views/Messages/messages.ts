@@ -1,12 +1,12 @@
 import { useIdb } from "@/utils/localforage";
 import { ref } from "vue";
-import { Mention } from "./Mentions";
+import { Mention } from "../Mentions";
 
 interface message {
     id: string;
     titleMessage: string;
     message: string;
-    contacs: string[]
+    contacts: string[]
 }
 
 export const messageData = ref<message[]>([])
@@ -32,6 +32,11 @@ export class Message {
         if(isNotOkeToSend) return;
         await this.db.updateItem(message.id, message);
         await this.messageRetrieve();
+    }
+
+    async messageUpdateContacts (idMessage: string, contacts: string[]) {
+        if(!idMessage) return;
+        await this.db.updateItem(idMessage, { contacts });
     }
 
     async messageRetrieve() {

@@ -2,7 +2,7 @@ import { useIdb } from "@/utils/localforage";
 import { ref } from "vue";
 import { Mention } from "./Mentions";
 
-interface contact {
+export interface contact {
     id: string;
     name: string;
     phone: number;

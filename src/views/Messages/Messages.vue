@@ -29,7 +29,7 @@
         type="button" 
         @click="cancel" 
       />
-      </form>
+    </form>
     </div>
       <Datatable
         :datanya="messageData"
@@ -52,33 +52,51 @@
           value="Contacts" 
           :datanya="slotProp.prop.id" 
           type="button" 
-          @click="isModalActive = true" 
+          @click="editContacts" 
           />
       </Datatable>
 
-      <Modal title="example" :active="isModalActive" ></Modal>
+      <Modal 
+        :title="modalTitle" 
+        :active="isModalActive" 
+        @close="cancel"
+      >
+        <SelectContact 
+          v-if="modalForm == 'editContacts'"
+          :contactData="contactData"
+          :contacts-selected="form.contacts"
+          @updateContacts="handleUpdateContacts"
+        >
+        </SelectContact>
+      </Modal>
   </template>
   
   <script setup lang="ts">
-    import Button from "@/components/Button.vue"
-    import Datatable from "@/components/Datatable.vue"
+    import Button from "@/components/Button.vue";
+    import Datatable from "@/components/Datatable.vue";
     import { ref } from "vue";
-    import { Message, messageData } from "./messages"
+    import { Message, messageData } from "./messages";
     import Modal from "@/components/Modal.vue";
+    import SelectContact from "./SelectContact.vue";
+    import { Contact, contactData } from "../Contacts";
   
-    const isModalActive = ref(false)
-    const form = ref({ titleMessage: '', message: '', id: '', contacs: ['']});
+    const isModalActive = ref(false);
+    const modalForm = ref('');  
+    const modalTitle = ref('')
+    const form = ref({ titleMessage: '', message: '', id: '', contacts: ['']});
     const idEdit = ref('');
     const messageOperation = new Message();
-  
+    const contactOperation = new Contact();
+    
     function cancel () {
       idEdit.value = '';
-      form.value = { titleMessage: '', message: '', id: '', contacs: [''] }
+      form.value = { titleMessage: '', message: '', id: '', contacts: [''] };
+      isModalActive.value = false;
     }
   
     async function handleSubmit() {
       const isNotOkeToSend = !form.value.titleMessage || !form.value.message;
-      console.log(isNotOkeToSend, form.value)
+      
       if(isNotOkeToSend) { 
         alert('Form tidak boleh kosong') 
         return
@@ -89,7 +107,6 @@
       else messageOperation.messageAppend(dataToSend)
       
       cancel()
-  
     }
     
     async function edit (messageId: string) {
@@ -98,11 +115,19 @@
       const data = await messageOperation.messageGetById(messageId)
       if(!data) return;
       form.value = data;
-  
     }
 
-    function addOrRemoveContacts() {
-      isModalActive.value = true
+    async function editContacts (idMessage: string) {
+      await edit(idMessage)
+      
+      isModalActive.value = true;
+      modalForm.value = 'editContacts'
+      modalTitle.value = 'Update contact message'
+    }
+
+    function handleUpdateContacts(contacts: string[]) {
+      form.value.contacts = contacts.filter((contact => contact != ''));
+      handleSubmit();
     }
     
   </script>
