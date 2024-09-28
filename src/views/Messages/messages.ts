@@ -42,7 +42,7 @@ export class Message {
     async messageRetrieve() {
         const data = await this.db.getItems<message>();
         if(!data.length) return;
-        messageData.value = data
+        messageData.value = data.map((datum) => ({ ...datum, message: datum.message.substring(0, 40) }))
     }
 
     async messageGetById(id: string) {

@@ -54,6 +54,14 @@
           type="button" 
           @click="editContacts" 
           />
+
+        <Button 
+          primary 
+          value="Broadcast" 
+          :datanya="slotProp.prop.id" 
+          type="button" 
+          @click="broadcastMessage" 
+          />
       </Datatable>
 
       <Modal 
@@ -128,6 +136,31 @@
     function handleUpdateContacts(contacts: string[]) {
       form.value.contacts = contacts.filter((contact => contact != ''));
       handleSubmit();
+    }
+
+    async function broadcastMessage(idMessage: string) {
+      if(!idMessage) return;
+      const data = await messageOperation.messageGetById(idMessage);
+      if(!data) return;
+      
+      for(let datum of data.contacts) {
+        const contactInfo = await contactOperation.contactGetById(datum);
+        if(!contactInfo) continue;
+
+        let replaceContactName = data.message.replace(/{{contact.name}}/g, contactInfo.name);
+        if(contactInfo.mentionName) {
+          replaceContactName = replaceContactName.replace(/{{contact.mention}}/g, contactInfo.mentionName);
+        }
+
+        if(!contactInfo.phone) continue;
+        const confirmMessage = `Kirim pesan ini ke ${contactInfo.name}`;
+        const confirm = window.confirm(confirmMessage);
+
+        if(!confirm) continue;
+        const confirmLink = `https://wa.me/${contactInfo.phone}?text=${encodeURI(replaceContactName)}`;
+        window.open(confirmLink, '_blank');
+        // console.log(confirmLink)
+      }
     }
     
   </script>

@@ -15,8 +15,10 @@ export const contactData = ref<contact[]>([])
 export class Contact {
 
     private db = useIdb('contacts');
+    private mentionOperation;
     constructor () {
         this.contactRetrieve();
+        this.mentionOperation = new Mention();
     }
 
     async contactAppend (contact: contact) {
@@ -30,8 +32,11 @@ export class Contact {
     }
 
     async contactUpdate (contact: contact) {
+        delete contact.mentionName;
+        
         const isNotOkeToSend = !contact.id  || !contact.name  || !contact.phone || !contact.mention;
         if(isNotOkeToSend) return;
+        console.log(contact)
         await this.db.updateItem(contact.id, contact);
         await this.contactRetrieve();
     }
@@ -41,8 +46,7 @@ export class Contact {
         const data = await this.db.getItems<contact>();
         if(!data.length) return;
         for(let datum of data) {
-            const mentionOperation = new Mention();
-            const mention = await mentionOperation.mentionGetById(datum.mention);
+            const mention = await this.mentionOperation.mentionGetById(datum.mention);
             contactData.value.push({ ...datum, mentionName: mention?.mention });
         }
     }
@@ -50,6 +54,7 @@ export class Contact {
     async contactGetById(id: string) {
         const data = await this.db.getItem<contact>(id);
         if(!data?.id) return;
-        return data;
+        const mention = await this.mentionOperation.mentionGetById(data.mention);
+        return { ...data, mentionName: mention?.mention };
     }
 }
