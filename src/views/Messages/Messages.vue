@@ -84,6 +84,7 @@
       idEdit.value = '';
       form.value = { titleMessage: '', message: '', id: '', contacts: [''] };
       isModalActive.value = false;
+      modalForm.value = "";
     }
   
     async function handleSubmit() {
@@ -107,14 +108,14 @@
       const data = await messageOperation.messageGetById(messageId)
       if(!data) return;
       form.value = data;
+
+      if(modalForm.value) return;
+      launchModal("newMessage", "Update message")
     }
 
     async function editContacts (idMessage: string) {
       await edit(idMessage)
-      
-      modalForm.value = 'editContacts'
-      modalTitle.value = 'Update contact message'
-      isModalActive.value = true;
+      launchModal('editContacts', 'Update contact message');
     }
 
     function handleUpdateContacts(contacts: string[]) {
@@ -128,8 +129,12 @@
     }
 
     function newMessageForm () {
-      modalForm.value = 'newMessage'
-      modalTitle.value = 'Create new message'
+      launchModal('newMessage', 'Create new message');
+    }
+
+    function launchModal(modalFormToSet: string, modalTitleToSet: string) {
+      modalForm.value = modalFormToSet;
+      modalTitle.value = modalTitleToSet;
       isModalActive.value = true;
     }
 
@@ -139,22 +144,16 @@
       if(!data) return;
       
       for(let datum of data.contacts) {
-        const contactInfo = await contactOperation.contactGetById(datum);
-        if(!contactInfo) continue;
 
-        let replaceContactName = data.message.replace(/{{contact.name}}/g, contactInfo.name);
-        if(contactInfo.mentionName) {
-          replaceContactName = replaceContactName.replace(/{{contact.mention}}/g, contactInfo.mentionName);
-        }
+        let messageToSend = await messageOperation.messageReplacePlaceholder(data.message, datum)
 
-        if(!contactInfo.phone) continue;
         const confirmMessage = `Kirim pesan ini ke ${contactInfo.name}`;
         const confirm = window.confirm(confirmMessage);
 
         if(!confirm) continue;
-        const confirmLink = `https://wa.me/${contactInfo.phone}?text=${encodeURI(replaceContactName)}`;
+        const confirmLink = `https://wa.me/${contactInfo.phone}?text=${encodeURI(messageToSend)}`;
         window.open(confirmLink, '_blank');
-        // console.log(confirmLink)
+        // console.log(messageToSend)
       }
     }
     

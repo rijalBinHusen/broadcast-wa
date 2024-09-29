@@ -8,6 +8,14 @@
         type="text" 
         placeholder="name" 
       />
+      
+      <input 
+      v-model="form.phone" 
+      class="w3-col s2 w3-input w3-large w3-margin-right" 
+      type="text" 
+      placeholder="Phone" 
+      />
+      
       <Select 
         :options="mentionsData" 
         value="id"
@@ -15,15 +23,8 @@
         @selected="form.mention = $event"
         title="Sebutan"
         :inselect="form.mention"
-        />
-
-      <input 
-        v-model="form.phone" 
-        class="w3-col s2 w3-input w3-large w3-margin-right" 
-        type="text" 
-        placeholder="Phone" 
+        class="w3-col s1 w3-margin-right"
       />
-  
       <Button 
         primary 
         class="w3-left w3-large w3-margin-left" 
@@ -63,8 +64,6 @@
     import Button from "@/components/Button.vue";
     import Datatable from "@/components/Datatable.vue";
     import Select from "@/components/Select.vue";
-    // import { addItem, updateItem, lists as stateItems, getItemById, removeItem, get20Item } from '@/composable/components/Baseitem'
-    // import { baseItem, lists as stateItems } from "./Baseitem"
     import { ref } from "vue";
     import { Mention, mentionsData } from "./Mentions"
     import { Contact, contactData } from "./Contacts";
