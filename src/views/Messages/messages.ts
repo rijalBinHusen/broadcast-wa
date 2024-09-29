@@ -1,6 +1,6 @@
 import { useIdb } from "@/utils/localforage";
 import { ref } from "vue";
-import { Contact } from "../Contacts";
+import { Contact, contactData, type contact } from "../Contacts";
 
 interface message {
     id: string;
@@ -51,18 +51,25 @@ export class Message {
         return data;
     }
 
-    async messageReplacePlaceholder(message: string, contactId: string): Promise<string> {
+    async messageReplacePlaceholder(message: string, contactId: string): Promise<{message: string, contact: contact}> {
 
         let result = message;
+        let contactInfo = <contact>{
+            id: "",
+            mention: "",
+            name: "",
+            phone: 0
+        }
         
         const isThereContactPlaceholder = message.indexOf("{{contact");
         
         if(isThereContactPlaceholder > -1) {
             
             const contactOperation = new Contact();
-            const contactInfo = await contactOperation.contactGetById(contactId);
-            if(contactInfo) {
-    
+            const getContact = await contactOperation.contactGetById(contactId);
+            if(getContact) {
+
+                contactInfo = getContact;    
                 result = result.replace(/{{contact.name}}/g, contactInfo.name);
                 if(contactInfo.mentionName) {
                     result = result.replace(/{{contact.mention}}/g, contactInfo.mentionName);
@@ -109,6 +116,9 @@ export class Message {
         result = result.replace(/{{next6thDayOfWeekAsDate}}/g, days.next6thDayOfWeek.toLocaleString('id-ID', { dateStyle: 'long' }));
         result = result.replace(/{{next7thDayOfWeekAsDate}}/g, days.next7thDayOfWeek.toLocaleString('id-ID', { dateStyle: 'long' }));
 
-        return result;
+        return {
+            message: result,
+            contact: contactInfo
+        }
     }
 }

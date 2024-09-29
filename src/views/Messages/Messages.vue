@@ -147,13 +147,13 @@
 
         let messageToSend = await messageOperation.messageReplacePlaceholder(data.message, datum)
 
-        const confirmMessage = `Kirim pesan ini ke ${contactInfo.name}`;
+        const confirmMessage = `Kirim pesan ini ke ${messageToSend.contact.name}`;
         const confirm = window.confirm(confirmMessage);
 
         if(!confirm) continue;
-        const confirmLink = `https://wa.me/${contactInfo.phone}?text=${encodeURI(messageToSend)}`;
+        const confirmLink = `https://wa.me/${messageToSend.contact.phone}?text=${encodeURI(messageToSend.message)}`;
         window.open(confirmLink, '_blank');
-        // console.log(messageToSend)
+        // console.log(confirmLink)
       }
     }
     
