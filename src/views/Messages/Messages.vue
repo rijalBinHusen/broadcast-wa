@@ -147,6 +147,7 @@
 
         let messageToSend = await messageOperation.messageReplacePlaceholder(data.message, datum)
 
+        if(!messageToSend.contact.phone) continue;
         const confirmMessage = `Kirim pesan ini ke ${messageToSend.contact.name}`;
         const confirm = window.confirm(confirmMessage);
 

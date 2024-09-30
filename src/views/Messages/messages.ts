@@ -54,22 +54,18 @@ export class Message {
     async messageReplacePlaceholder(message: string, contactId: string): Promise<{message: string, contact: contact}> {
 
         let result = message;
-        let contactInfo = <contact>{
-            id: "",
-            mention: "",
-            name: "",
-            phone: 0
-        }
+        let contactInfo = <contact>{}
         
         const isThereContactPlaceholder = message.indexOf("{{contact");
         
-        if(isThereContactPlaceholder > -1) {
+        
+        const contactOperation = new Contact();
+        const getContact = await contactOperation.contactGetById(contactId);
+        
+        if(getContact != undefined) {
             
-            const contactOperation = new Contact();
-            const getContact = await contactOperation.contactGetById(contactId);
-            if(getContact) {
-
-                contactInfo = getContact;    
+            contactInfo = getContact;    
+            if(isThereContactPlaceholder > -1) {
                 result = result.replace(/{{contact.name}}/g, contactInfo.name);
                 if(contactInfo.mentionName) {
                     result = result.replace(/{{contact.mention}}/g, contactInfo.mentionName);
@@ -80,14 +76,14 @@ export class Message {
 
         // replace date of time
         const currentDate = new Date();
-        const next1stDayOfWeek = currentDate.getDay() > 0 ? 7 - currentDate.getDay() : 0 ;
-        const next2ndDayOfWeek = currentDate.getDay() > 1 ? 7 - currentDate.getDay() : 1 ;
-        const next3rdDayOfWeek = currentDate.getDay() > 2 ? 7 - currentDate.getDay() : 2 ;
-        const next4thDayOfWeek = currentDate.getDay() > 3 ? 7 - currentDate.getDay() : 3 ;
-        const next5thDayOfWeek = currentDate.getDay() > 4 ? 7 - currentDate.getDay() : 4 ;
-        const next6thDayOfWeek = currentDate.getDay() > 5 ? 7 - currentDate.getDay() : 5 ;
-        const next7thDayOfWeek = currentDate.getDay() > 6 ? 7 - currentDate.getDay() : 6 ;
-
+        const next1stDayOfWeek = currentDate.getDay() > 0 ? 7 - currentDate.getDay() : 6 ;
+        const next2ndDayOfWeek = currentDate.getDay() > 1 ? 7 - currentDate.getDay() : 0 ;
+        const next3rdDayOfWeek = currentDate.getDay() > 2 ? 7 - currentDate.getDay() : 1 ;
+        const next4thDayOfWeek = currentDate.getDay() > 3 ? 7 - currentDate.getDay() : 2 ;
+        const next5thDayOfWeek = currentDate.getDay() > 4 ? 7 - currentDate.getDay() : 3 ;
+        const next6thDayOfWeek = currentDate.getDay() > 5 ? 7 - currentDate.getDay() : 4 ;
+        const next7thDayOfWeek = currentDate.getDay() > 6 ? 7 - currentDate.getDay() : 5 ;
+        
         const days = {
             next1stDayOfWeek: new Date(new Date().setDate(currentDate.getDate() + next1stDayOfWeek)),
             next2ndDayOfWeek: new Date(new Date().setDate(currentDate.getDate() + next2ndDayOfWeek)),
