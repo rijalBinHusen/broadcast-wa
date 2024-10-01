@@ -31,6 +31,10 @@ const props = defineProps({
     active: {
       type: Boolean,
       required: true,
+    },
+    isConfirmDialog: {
+      type: Boolean,
+      required: true,
     }
   })
 
@@ -42,7 +46,7 @@ const props = defineProps({
 
   
   watch(() => props.active, (newActive) => {
-    if(props.active) {
+    if(props.active && !props.isConfirmDialog) {
       document.addEventListener("keydown", handleKeyDown);
     } else {
       document.removeEventListener("keydown", handleKeyDown);

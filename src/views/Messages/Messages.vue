@@ -43,6 +43,7 @@
     :title="modalTitle" 
     :active="isModalActive" 
     @close="cancel"
+    :isConfirmDialog="modalForm == 'confirm'"
   >
     <SelectContact 
       v-if="modalForm == 'editContacts'"
@@ -59,6 +60,15 @@
     >
 
     </MessageCreate>
+
+    <Confirm
+      :active="isModalActive"
+      v-if="modalForm == 'confirm'"
+      :message="confirmMessage"
+      @confirm="handleConfirm"
+    >
+
+    </Confirm>
   </Modal>
 </template>
   
@@ -71,10 +81,14 @@
     import SelectContact from "./SelectContact.vue";
     import { Contact, contactData } from "../Contacts";
     import MessageCreate from "./MessageCreate.vue"
+    import Confirm from "./Confirm.vue";
+    import EventEmitter from "@/utils/EventEmitter";
   
+    const eventSubscribeEmit = new EventEmitter();
     const isModalActive = ref(false);
     const modalForm = ref('');  
-    const modalTitle = ref('')
+    const modalTitle = ref('');
+    const confirmMessage = ref('')
     const form = ref({ titleMessage: '', message: '', id: '', contacts: ['']});
     const idEdit = ref('');
     const messageOperation = new Message();
@@ -132,10 +146,11 @@
       launchModal('newMessage', 'Create new message');
     }
 
-    function launchModal(modalFormToSet: string, modalTitleToSet: string) {
+    function launchModal(modalFormToSet: string, modalTitleToSet?: string, messageConfirmDialog?: string) {
       modalForm.value = modalFormToSet;
-      modalTitle.value = modalTitleToSet;
+      modalTitle.value = modalTitleToSet || "";
       isModalActive.value = true;
+      confirmMessage.value = messageConfirmDialog || "";
     }
 
     async function broadcastMessage(idMessage: string) {
@@ -148,14 +163,19 @@
         let messageToSend = await messageOperation.messageReplacePlaceholder(data.message, datum)
 
         if(!messageToSend.contact.phone) continue;
-        const confirmMessage = `Kirim pesan ini ke ${messageToSend.contact.name}`;
-        const confirm = window.confirm(confirmMessage);
-
+        launchModal('confirm', '', `Kirim pesan kepada ${messageToSend.contact.name}?`);
+        const confirm = await eventSubscribeEmit.waitForEvent("confirm-send-message");
+        
         if(!confirm) continue;
         const confirmLink = `https://wa.me/${messageToSend.contact.phone}?text=${encodeURI(messageToSend.message)}`;
         window.open(confirmLink, '_blank');
         // console.log(confirmLink)
       }
+      cancel()
+    }
+
+    function handleConfirm(confirm:  boolean) {
+      eventSubscribeEmit.emit("confirm-send-message", confirm)
     }
     
   </script>
